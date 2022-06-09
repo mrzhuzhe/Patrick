@@ -9,14 +9,28 @@
 %     Chapter 1, Section 1.2, p 25, Question 19.
 %
 
+
+% This is a code for Problem 1.2.19: Finite differences for the linear advection-diffusion equation
+% - D * u_xx + v * u_x = 1 in Homework 1 [1.2.19]
+% You could test this code with different parameters D, v, h as suggested below.
+% The code solves and then plots the solutions. It compares the true analytic solution with the solution from finite differences, using (1) centered differences and (2) upwind differences. See sample outputs. It is easy to
+% * see the matrices K (diffusion) and Del0 or Del_+ (centered/forward) for small N
+% * see the boundary conditions u(0) = 0 and u(1) = 0
+% * see whether centered or upwind is more accurate
+% * make h smaller and see the approximations converge (increase the number of mesh points, N, to make h smaller)
+% * try different values of the parameters D, v
+% (i) v=D=1
+% (ii) v << D (and see the numerical approximation is good, even with large h)
+% (iii) v >> D (and see a boundary layer because diffusion is so weak)
+
 clear
 clc
 close all
 
 % try experimenting with parameters D, v, and N.
 % D=1; v=1; 
- D=0.05; v=0.2;
-% D=0.05; v=2; % boundary layer
+% D=0.05; v=0.2;
+D=0.05; v=2; % boundary layer
 N=5+1; % mesh points 
 
 xL=0; xR=1; h=(xR-xL)/(N-1);    % h is the spatial discretization size
@@ -28,16 +42,20 @@ C=1/(v*(exp(r)-1));
 uTrue=x/v+C*(1-exp(r*x));
 
 % diffusion matrix
-e = ones(N,1); K = spdiags([e -2*e e], -1:1, N, N); K=D*K/h^2; 
-%K=full(K)  % uncomment this line to see the matrix K (it will be easier if N is small)
+e = ones(N,1); 
+K = spdiags([e -2*e e], -1:1, N, N); 
+K=D*K/h^2; 
+K=full(K)  % uncomment this line to see the matrix K (it will be easier if N is small)
 
 % centered difference matrix
-Del0 = spdiags([-e e], [-1 1], N, N); Del0=v*Del0/(2*h);
-%Del0=full(Del0)
+Del0 = spdiags([-e e], [-1 1], N, N); 
+Del0=v*Del0/(2*h);
+Del0=full(Del0)
 
 % upwind difference matrix
-DelPlus = spdiags([-e e], 0:1, N, N); DelPlus=v*DelPlus/h;
-%DelPlus=full(DelPlus)
+DelPlus = spdiags([-e e], 0:1, N, N); 
+DelPlus=v*DelPlus/h;
+DelPlus=full(DelPlus)
 
 %% Linear solve
 A=Del0-K; % centered advection matrix, plus diffusion matrix
