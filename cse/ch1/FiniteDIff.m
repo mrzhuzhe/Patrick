@@ -48,7 +48,7 @@ K=D*K/h^2;
 K=full(K)  % uncomment this line to see the matrix K (it will be easier if N is small)
 
 % centered difference matrix
-Del0 = spdiags([-e e], [-1 1], N, N); 
+Del0 = spdiags([-e e], [-1 1], N, N)
 Del0=v*Del0/(2*h);
 Del0=full(Del0)
 
