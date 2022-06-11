@@ -1,7 +1,8 @@
 import taichi as ti
+import numpy as np
 ti.init(arch=ti.gpu)  # Alternatively, ti.init(arch=ti.cpu)
 
-n = 10
+n = 128
 dt = 1e-3
 ball_radius = 0.1
 substeps = int(1 / 60 // dt)
@@ -32,17 +33,17 @@ def substep():
     for i in ti.ndrange(n):
         for j in ti.ndrange(n):
             if i == j:
-                continue
-            offset_to_center = x[i] + dt * v[i] - x[j] - dt * v[j]
-            #offset_to_center = x[i] - x[j]
-            #v_all = (v[i] + v[j]) * offset_to_center.normalized()
-            # collapse will be happen in next time step
-            if offset_to_center.norm() - ball_radius * 2 <=  0:
+                continue                        
+            offset_to_center_now = (x[i] - x[j]).norm()
+            # for intersect case
+            offset_delta = (x[i] - x[j]).dot(v[i] - v[j])
+            if offset_to_center_now - ball_radius * 2 <=  0:
                 #normal = (v[i] - v[j]).normalized()
                 #v[i] -= (v[i] - v[j]).dot(normal) * normal
-                tmp = v[i]
-                v[i] = v[j]
-                v[j] = tmp
+                if offset_delta < 0:
+                    tmp = v[i]
+                    v[i] = v[j]
+                    v[j] = tmp
         # four conner
         for d in ti.static(range(3)):
             if x[i][d] >= 1 or x[i][d] <= -1:
@@ -68,10 +69,9 @@ while window.running:
     scene.set_camera(camera)
 
     scene.point_light(pos=(0, 1, 2), color=(1, 1, 1))
-    scene.ambient_light((0.5, 0.5, 0.5))
+    #scene.ambient_light((0.5, 0.5, 0.5))
 
     # Draw a smaller ball to avoid visual penetration
-    #print(x)
     scene.particles(x, radius=ball_radius, color=(0.5, 0.42, 0.8))
 
     canvas.scene(scene)

@@ -103,13 +103,14 @@ def substep():
         v[i] *= ti.exp(-drag_damping * dt)
 
         for _ball_num in ti.static(range(3)): 
+            #offset_to_center = x[i] - ball_center[_ball_num]
             offset_to_center = x[i] - ball_center[_ball_num]
-            if offset_to_center.norm() <= ball_radius:
+            if (offset_to_center + v[i]*dt).norm() <= ball_radius:
                 # Velocity projection
                 normal = offset_to_center.normalized()
-                #v[i] -= min(v[i].dot(normal), 0) * normal
+                v[i] -= min(v[i].dot(normal), 0) * normal
                 #v[i] += min(v[i].dot(offset_to_center), 0)
-                v[i] -= v[i].dot(normal) * normal
+                #v[i] -= v[i].dot(normal) * normal
 
         x[i] += dt * v[i]
 
