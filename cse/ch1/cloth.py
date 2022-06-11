@@ -12,14 +12,10 @@ dashpot_damping = 1e4
 drag_damping = 1
 
 ball_radius = 0.3
-ball_center = ti.Vector.field(3, dtype=float, shape=(1, ))
+ball_center = ti.Vector.field(3, dtype=float, shape=(3, ))
 ball_center[0] = [0, 0, 0]
-
-ball_center1 = ti.Vector.field(3, dtype=float, shape=(1, ))
-ball_center1[0] = [-0.6, -0.5, 0]
-
-ball_center2 = ti.Vector.field(3, dtype=float, shape=(1, ))
-ball_center2[0] = [0.6, -0.5, 0]
+ball_center[1] = [-0.6, -0.5, 0]
+ball_center[2] = [0.6, -0.5, 0]
 
 x = ti.Vector.field(3, dtype=float, shape=(n, n))
 v = ti.Vector.field(3, dtype=float, shape=(n, n))
@@ -105,26 +101,15 @@ def substep():
 
     for i in ti.grouped(x):
         v[i] *= ti.exp(-drag_damping * dt)
-        
-        offset_to_center = x[i] - ball_center[0]
-        if offset_to_center.norm() <= ball_radius:
-            # Velocity projection
-            normal = offset_to_center.normalized()
-            v[i] -= min(v[i].dot(normal), 0) * normal
-            #v[i] -= v[i].dot(normal) * normal
 
-        offset_to_center1 = x[i] - ball_center1[0]
-        if offset_to_center1.norm() <= ball_radius:
-            # Velocity projection
-            normal1 = offset_to_center1.normalized()
-            v[i] -= min(v[i].dot(normal1), 0) * normal1
-        
-        offset_to_center2 = x[i] - ball_center2[0]
-        if offset_to_center2.norm() <= ball_radius:
-            # Velocity projection
-            normal2 = offset_to_center2.normalized()
-            v[i] -= min(v[i].dot(normal2), 0) * normal2
-        
+        for _ball_num in ti.static(range(3)): 
+            offset_to_center = x[i] - ball_center[_ball_num]
+            if offset_to_center.norm() <= ball_radius:
+                # Velocity projection
+                normal = offset_to_center.normalized()
+                v[i] -= min(v[i].dot(normal), 0) * normal
+                #v[i] += min(v[i].dot(offset_to_center), 0)
+                #v[i] -= v[i].dot(normal) * normal
 
         x[i] += dt * v[i]
 
@@ -170,10 +155,6 @@ while window.running:
 
     # Draw a smaller ball to avoid visual penetration
     scene.particles(ball_center, radius=ball_radius * 0.95, color=(0.5, 0.42, 0.8))
-
-    scene.particles(ball_center1, radius=ball_radius * 0.95, color=(0.5, 0.42, 0.8))
-
-    scene.particles(ball_center2, radius=ball_radius * 0.95, color=(0.5, 0.42, 0.8))
 
     canvas.scene(scene)
     window.show()
