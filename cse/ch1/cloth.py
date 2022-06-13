@@ -30,10 +30,10 @@ bending_springs = False
 cloth_start_point_x = 1
 cloth_start_point_y = 0.6
 cloth_start_point_z = 1
+
 @ti.kernel
 def initialize_mass_points():
-    random_offset = ti.Vector([ti.random() - 0.5, ti.random() - 0.5]) * 0.1
-
+    random_offset = ti.Vector([ti.random() - 0.5, ti.random() - 0.5])
     for i, j in x:
         x[i, j] = [
             i * quad_size - cloth_start_point_x + random_offset[0], cloth_start_point_y,

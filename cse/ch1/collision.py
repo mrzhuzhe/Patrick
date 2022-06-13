@@ -2,11 +2,16 @@ import taichi as ti
 import numpy as np
 ti.init(arch=ti.gpu)  # Alternatively, ti.init(arch=ti.cpu)
 
-n = 128
+n = 1024
 dt = 1e-3
-ball_radius = 0.1
+ball_radius = 0.01
+gravity = ti.Vector([0, -9.8, 0])
 substeps = int(1 / 60 // dt)
-print(substeps)
+
+
+partical_dash_damping = ti.exp(-1e2 * dt)
+border_dash_damping = ti.exp(-1e3 * dt)
+
 x = ti.Vector.field(3, dtype=float, shape=n)
 v = ti.Vector.field(3, dtype=float, shape=n)
 
@@ -31,23 +36,31 @@ def initialize_points():
 @ti.kernel
 def substep():   
     for i in ti.ndrange(n):
+
+        v[i] += gravity * dt
+        if x[i].norm() > 0.3:
+            v[i] += - 10 * x[i] * dt 
+
         for j in ti.ndrange(n):
             if i == j:
                 continue                        
             offset_to_center_now = (x[i] - x[j]).norm()
-            # for intersect case
-            offset_delta = (x[i] - x[j]).dot(v[i] - v[j])
+            #offset_to_center_new = (x[i] - x[j] + (v[i] - v[j])*dt).norm()
+            # for intersect case            
+            offset_delta = (2*(x[i] - x[j])*dt + (v[i] - v[j])*dt*dt).dot(v[i] - v[j])
+            #   offset_delta = (2*(x[i] - x[j])).dot((v[i] - v[j])*dt) + ((v[i] - v[j])*dt).dot(((v[i] - v[j])*dt)) # alt form
             if offset_to_center_now - ball_radius * 2 <=  0:
                 #normal = (v[i] - v[j]).normalized()
                 #v[i] -= (v[i] - v[j]).dot(normal) * normal
                 if offset_delta < 0:
                     tmp = v[i]
-                    v[i] = v[j]
-                    v[j] = tmp
+                    v[i] = v[j] * partical_dash_damping
+                    v[j] = tmp * partical_dash_damping
         # four conner
         for d in ti.static(range(3)):
             if x[i][d] >= 1 or x[i][d] <= -1:
-                v[i][d] = -v[i][d]
+                v[i][d] = -v[i][d] * border_dash_damping
+
         x[i] += dt * v[i]
         
 window = ti.ui.Window("Taichi Cloth Simulation on GGUI", (1024, 1024),
