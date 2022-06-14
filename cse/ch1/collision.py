@@ -10,7 +10,7 @@ substeps = int(1 / 60 // dt)
 
 
 partical_dash_damping = ti.exp(-1e2 * dt)
-border_dash_damping = ti.exp(-1e3 * dt)
+border_dash_damping = ti.exp(-1e2 * dt)
 
 x = ti.Vector.field(3, dtype=float, shape=n)
 v = ti.Vector.field(3, dtype=float, shape=n)
@@ -37,9 +37,9 @@ def initialize_points():
 def substep():   
     for i in ti.ndrange(n):
 
-        v[i] += gravity * dt
+        #v[i] += gravity * dt
         if x[i].norm() > 0.3:
-            v[i] += - 10 * x[i] * dt 
+            v[i] += - x[i] * dt 
 
         for j in ti.ndrange(n):
             if i == j:
