@@ -96,6 +96,12 @@ def substep():
                 force += -spring_Y * d * (current_dist / original_dist - 1)
                 # Dashpot damping
                 force += -v_ij.dot(d) * d * dashpot_damping * quad_size
+        
+        # four conner
+        for d in ti.static(range(3)):
+            if x[i][d] >= 1 or x[i][d] <= -1:
+                v[i][d] = 0
+
 
         v[i] += force * dt
 

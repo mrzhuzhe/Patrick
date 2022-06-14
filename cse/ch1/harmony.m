@@ -10,15 +10,19 @@
 %    graph of the highest wave function.  SEE harmonic.mat****
 
 function harmonic(L,n,k)        % positive integers L,n,k
-L = 10
-n = 200
-k = 20
+L = 5
+n = 10
+k = 8
 h=1/n; N=2*n*L+1;               % N points in interval [-L,L]
 K=toeplitz([2 -1 zeros(1,N-2)]); % second difference matrix
-V=diag((-L:h:L).^2/2);          % diagonal matrix from x^2/2
-H=K/(2*h^2)+V;                  % Hamiltonian = kinetic + potential
+#V=diag((-L:h:L).^2/2);          % diagonal matrix from x^2/2
+V=diag((-L:h:L).^2);  
+#H=K/(2*h^2)+V;                  % Hamiltonian = kinetic + potential
+H=K/(h^2)+V;
 % [V,F]=eig(H,k,'SM');            % k eigenvectors and eigenvalues
-[V,F]=eig(H,k);            % k eigenvectors and eigenvalues
-E=diag(F)                       % smallest k eigenvalues of H
+[V,F]=eig(H);            % k eigenvectors and eigenvalues
+E=diag(F) 
+E=E(1:k)                      % smallest k eigenvalues of H
 j=1:k;
 plot(k+1-j,E);                  % MAYBE plot(1:k,E)?
+#plot(j,E); 
