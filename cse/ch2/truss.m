@@ -33,6 +33,8 @@ bars = [
     3,6,4
 ];
 
+#bars = [];
+
 %% Properties of Truss
 N = size(nodes,1);      % Number of nodes (rows of nodes)
 m = size(bars,1);       % Number of bars (rows of bars)
