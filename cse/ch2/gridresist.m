@@ -1,5 +1,6 @@
 %2.4  gridresistcode.m
-
+k = 9
+j = 0
 N=3; % N*N nodes and 2N*N - 2N edges in a square grid
 col=[-1; zeros(N*N - 1,1)]; % -1 on diagonal of AH
 row=[-1 1 zeros(1,N*N -2)]; % +1 next to the diagonal 
@@ -19,5 +20,6 @@ norm(ATA - fastATA) % Check that both ATA's are correct
 % Easier way ! Create a current source f between nodes j and k
 % Ground a node (which can be k) and find u=ATA\f and u(j)
 % This is the voltage needed at j for unit current from j to k
+ATA
 ATA(:,k)=[]; ATA(k,:)=[]; % Ground node k to make ATA invertible
 f=zeros(N*N - 1); f(j)=1; u=ATA\f; u(j) % Expect 1/2 for neighbors
