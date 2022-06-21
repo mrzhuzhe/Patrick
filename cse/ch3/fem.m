@@ -36,7 +36,7 @@ end   % all T element matrices and vectors now assembled into K and F
 % [Kb,Fb] = dirichlet(K,F,b) % assembled K was singular! K*ones(N,1)=0
 % Implement Dirichlet boundary conditions U(b)=0 at nodes in list b
 K(b,:)=0; K(:,b)=0; F(b)=0; % put zeros in boundary rows/columns of K and F 
-K(b,b)=speye(length(b),length(b)); % put I into boundary submatrix of K
+K(b,b)=speye(length(b),length(b)) % put I into boundary submatrix of K
 Kb=K; Fb=F; % Stiffness matrix Kb (sparse format) and load vector Fb
 
 % Solving for the vector U will produce U(b)=0 at boundary nodes
