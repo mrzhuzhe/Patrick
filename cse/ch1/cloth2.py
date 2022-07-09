@@ -92,52 +92,6 @@ def substep():
         x[i] += dt * v[i]
 
 
-@ti.kernel
-def initialize_mesh_indices():
-    """
-    for z, i, j in ti.ndrange(2, n - 1, n - 1):
-        quad_id = z * ((n-1) * (n - 1)) + (i * (n - 1)) + j
-        _vertices_id = z*n*n* (slices - 1)
-        # 1st triangle of the square
-        indices[quad_id * 6 + 0] = _vertices_id + i * n + j
-        indices[quad_id * 6 + 1] = _vertices_id + (i + 1) * n + j
-        indices[quad_id * 6 + 2] = _vertices_id + i * n + (j + 1)
-        # 2nd triangle of the square
-        #indices[quad_id * 6 + 3] = _vertices_id + (i + 1) * n + j + 1
-        #indices[quad_id * 6 + 4] = _vertices_id + i * n + (j + 1)
-        #indices[quad_id * 6 + 5] = _vertices_id + (i + 1) * n + j
-
-    """
-    
-    #"""
-    #for face, i, j in ti.ndrange(4, n - 1, slices - 1):
-    #    pass
-    
-    #for face, i, j in ti.ndrange(2, slices - 1, n - 1):
-    #    quad_id = num_triangles + face * (n-1) * (slices-1)  + (i * (n-1)) + j
-    for front in ti.static(range(2)):
-        for i, j in ti.ndrange(slices - 1, n - 1):
-            #quad_id = num_triangles + front *(n-1)*(slices-1) + (i * (n-1)) + j
-            quad_id = front *(n-1)*(slices-1) + (i * (n-1)) + j
-            _vertices_id = (n-1) * n * front
-            _step  = n * n 
-            # 1st triangle of the square
-            indices[quad_id * 6 + 0] = _vertices_id + i * _step   + j
-            indices[quad_id * 6 + 1] = _vertices_id + (i + 1)  * _step + j
-            indices[quad_id * 6 + 2] = _vertices_id + i * _step + (j + 1)
-
-    #"""
-
-
-    for z, i, j in ti.ndrange(slices, n, n):
-        if (i // 4 + j // 4) % 2 == 0:
-            colors[z*n*n + i * n + j] = (0.22, 0.72, 0.52)
-        else:
-            colors[z*n*n + i * n + j] = (1, 0.334, 0.52)
-
-initialize_mesh_indices()
-
-#print(indices)
 
 @ti.kernel
 def update_vertices():
@@ -156,7 +110,7 @@ current_t = 0
 initialize_mass_points()
 
 while window.running:
-    """
+    #"""
     if current_t > 3:
         # Reset
         initialize_mass_points()
@@ -165,7 +119,7 @@ while window.running:
     for i in range(substeps):
         substep()
         current_t += dt
-    """
+    #"""
     update_vertices()
 
     camera.position(0.0, 0.0, 3)
@@ -175,15 +129,15 @@ while window.running:
     scene.point_light(pos=(0, 1, 2), color=(1, 1, 1))
     scene.ambient_light((0.5, 0.5, 0.5))
     
-    #"""
+    """
     scene.mesh(vertices,
             indices=indices,
             per_vertex_color=colors,
             two_sided=True
             )
-    #"""
+    """
 
-    #scene.particles(vertices, radius=0.005, color=(0.5, 0.42, 0.8))
+    scene.particles(vertices, radius=0.005, color=(0.5, 0.42, 0.8))
 
     # Draw a smaller ball to avoid visual penetration
     scene.particles(ball_center, radius=ball_radius * 0.95, color=(0.5, 0.42, 0.8))
