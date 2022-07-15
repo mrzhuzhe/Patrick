@@ -176,10 +176,10 @@ ENL = np.zeros([NoN, 6*PD])
 print(PD, NoN, ENL)
 
 ENL[:, 0:PD] = NL[:,:]
-print(ENL)
+#print(ENL)
 
 ENL[:, PD:2*PD] = DorN[:,:]
-print(ENL)
+#print(ENL)
 
 # assign boundary condition 
 (ENL, DOFs, Docs) = assign_BCs(NL, ENL)
@@ -203,6 +203,9 @@ print(K.shape)
 Fp = assemble_forces(ENL, NL)
 Up = assemble_displacement(ENL, NL)
 
+print("Fp", Fp)
+print("Up", Up)
+
 """
 KUU  Dofs Dofs
 Kup  Dofs Docs
@@ -220,9 +223,15 @@ print("K_UP", K_UP)
 print("K_PU", K_PU)
 print("K_PP", K_PP)
 
-F = Fp - np.matmul(K_UP, Up)
+print("Fp", Fp)
+F = Fp - np.matmul(K_UP, Up) # np.matmul(K_UP, Up) # Up always be all zero this will be always F == Fp
+print("F", F)
+
+# 自由项的位移
 U_u = np.matmul(np.linalg.inv(K_UU), F)
+# 支反力
 fu = np.matmul(K_PU, U_u) + np.matmul(K_PP, Up)
+print("np.matmul(K_PP, Up))", np.matmul(K_PP, Up)) # always be zero
 
 ENl = update_nodes(ENL, U_u, NL, fu)
 
