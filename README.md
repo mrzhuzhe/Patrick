@@ -14,6 +14,10 @@ python3 setup.py develop --user
 
 ```
 
+refferernces
+
+> https://github.com/yhesper/TaichiSimplicialFluid
+
 ## Rllib test
 
 > https://docs.ray.io/en/latest/data/getting-started.html
