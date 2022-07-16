@@ -7,9 +7,14 @@ vec3f = ti.types.vector(3, ti.f32)
 
 
 mesh_builder = ti.TriMesh()
-mesh_builder.verts.place({'x': vec3f, 'vel': vec3f, 'cn': vec3f})
-mesh_builder.faces.place({'vel': vec3f,'area': ti.f32, 'normal': vec3f, 'momentum':vec3f, 'mean_edge_length':ti.f32, 'incenter': vec3f })
-mesh_builder.edges.place({'cotan': ti.f32, 'normal':vec3f, 'momentum':vec3f})
+
+mesh_builder.verts.place({'x': vec3f})
+
+mesh_builder.faces.place({'use': ti.i32	, 'area': ti.f32, 'normal': vec3f, 'incenter': vec3f })
+
+#mesh_builder.verts.place({'x': vec3f, 'vel': vec3f, 'cn': vec3f})
+#mesh_builder.faces.place({'vel': vec3f,'area': ti.f32, 'normal': vec3f, 'momentum':vec3f, 'mean_edge_length':ti.f32, 'incenter': vec3f })
+#mesh_builder.edges.place({'cotan': ti.f32, 'normal':vec3f, 'momentum':vec3f})
 
 mesh_builder.verts.link(mesh_builder.verts)
 mesh_builder.edges.link(mesh_builder.verts)
@@ -47,7 +52,7 @@ vertex_color = ti.Vector.field(n=3, dtype=ti.f32, shape=nv)
 @ti.kernel
 def set_vertex_color():
     for i in range (nv):
-        vertex_color[i] = vec3f(0.3, 0.3, 0.3)
+        vertex_color[i] = vec3f(0.1, 0.1, 0.1)
 
 
 
@@ -62,15 +67,21 @@ def fill_faces_attributes():
         B = v2.x - v0.x
         n = ti.math.cross(A, B)
         f.area = ti.math.length(n) * 0.5
-        #"""
+        
+        f.normal = (n / ti.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]))
+        if (ti.math.dot(n, v0.x) >= 0.0 and ti.math.dot(n, v1.x) >= 0.0 and ti.math.dot(n, v2.x) >= 0.0):
+            f.use = 0
+        else:
+            f.use = 1
+        """
         # hardcode a test for making normal vector outwards
         # sadly only works for convex models centered at origin
         if (ti.math.dot(n, v0.x) >= 0.0 and ti.math.dot(n, v1.x) >= 0.0 and ti.math.dot(n, v2.x) >= 0.0):
             f.normal = (n / ti.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]))
         else:
             #f.normal = -(n / ti.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]))
-            f.normal = (n / ti.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]))
-        #"""
+            
+        """
         
 
         # calculate face incenter 
@@ -110,8 +121,9 @@ print(model.verts.x.to_numpy().min())
 @ti.kernel
 def get_incenterPoint():    
     for i in ti.ndrange(nf):
-        incenter_point[i] = model.faces.incenter[i]
-        incenter_Upper_point[i] = model.faces.incenter[i] + model.faces.normal[i] * 3
+        if model.faces.use[i] == 1:
+            incenter_point[i] = model.faces.incenter[i]
+            incenter_Upper_point[i] = model.faces.incenter[i] + model.faces.normal[i] * 3
 
 
 get_incenterPoint()
