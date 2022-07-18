@@ -1,4 +1,5 @@
 import taichi as ti
+import numpy as np
 import meshtaichi_patcher as Patcher
 
 ti.init(arch=ti.gpu)
@@ -52,8 +53,11 @@ vertex_color = ti.Vector.field(n=3, dtype=ti.f32, shape=nv)
 @ti.kernel
 def set_vertex_color():
     for i in range (nv):
+        #if i %2 == 0:
+        #    vertex_color[i] = vec3f(0.1, 0.1, 0.1)
+        #else :
+        #    vertex_color[i] = vec3f(0.9, 0.1, 0.1)
         vertex_color[i] = vec3f(0.1, 0.1, 0.1)
-
 
 
 
@@ -69,10 +73,7 @@ def fill_faces_attributes():
         f.area = ti.math.length(n) * 0.5
         
         f.normal = (n / ti.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]))
-        if (ti.math.dot(n, v0.x) >= 0.0 and ti.math.dot(n, v1.x) >= 0.0 and ti.math.dot(n, v2.x) >= 0.0):
-            f.use = 0
-        else:
-            f.use = 1
+        
         """
         # hardcode a test for making normal vector outwards
         # sadly only works for convex models centered at origin
@@ -92,7 +93,19 @@ def fill_faces_attributes():
         _An = A.norm()
         f.incenter = (_Cn * v2.x + _Bn * v1.x + _An * v0.x ) / (_Cn + _Bn + _An)
 
-        
+        if (ti.math.dot(n, v0.x) >= 0.0 and ti.math.dot(n, v1.x) >= 0.0 and ti.math.dot(n, v2.x) >= 0.0):
+            
+            f.use = 0
+            
+        else:
+            
+            #"""            
+            if 13.5 < f.incenter[0] < 14.5:
+                f.use = 1
+            else:
+                f.use = 0
+            #"""
+            #f.use = 1   
 
 fill_faces_attributes()
 
@@ -116,14 +129,16 @@ camera.lookat(0, 50, 0)
 print(model.verts.x.to_numpy().max())
 print(model.verts.x.to_numpy().min())
 
-#print(model.faces.incenter)
+#_incenter = model.faces.incenter.to_numpy()
+#np.save("outputs/incenter.npy", _incenter)
+#print(_incenter)
 
 @ti.kernel
 def get_incenterPoint():    
     for i in ti.ndrange(nf):
         if model.faces.use[i] == 1:
             incenter_point[i] = model.faces.incenter[i]
-            incenter_Upper_point[i] = model.faces.incenter[i] + model.faces.normal[i] * 3
+            incenter_Upper_point[i] = model.faces.incenter[i] + model.faces.normal[i] * 5
 
 
 get_incenterPoint()
@@ -139,14 +154,14 @@ while window.running:
     scene.point_light(pos=(0.5, 1.5, 1.5), color=(1, 1, 1))
 
     set_vertex_color()
-    #scene.mesh(model.verts.x, indices, per_vertex_color = vertex_color)
-    scene.mesh(model.verts.x, indices)  # model point seems too little
+    scene.mesh(model.verts.x, indices, per_vertex_color = vertex_color)
+    #scene.mesh(model.verts.x, indices)  # model point seems too little
     
     #scene.particles(model.verts.x, color = (0, 1, 0), radius = 1)
     
-    scene.particles(incenter_point, color = (1, 0, 0), radius = 0.1)
+    scene.particles(incenter_point, color = (1, 0, 0), radius = 1)
 
-    scene.particles(incenter_Upper_point, color = (0, 0, 1), radius = 0.1)
+    scene.particles(incenter_Upper_point, color = (0, 0, 1), radius = 1)
 
     canvas.scene(scene)
     window.show()
