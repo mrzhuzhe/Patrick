@@ -100,12 +100,12 @@ def fill_faces_attributes():
         else:
             
             #"""            
-            if 13.5 < f.incenter[0] < 14.5:
+            if 14 < f.incenter[0] < 14.5:
                 f.use = 1
             else:
                 f.use = 0
             #"""
-            #f.use = 1   
+            f.use = 1   
 
 fill_faces_attributes()
 
