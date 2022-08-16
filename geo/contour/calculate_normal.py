@@ -82,6 +82,7 @@ ax.scatter(middlepointX, middlepointZ, color="red")
 
 print("len(TCPpositionX), len(TCPpositionZ), len(middlepointNoralDegree)", len(TCPpositionX), len(TCPpositionZ), len(middlepointNoralDegree))
 # absolute value for Z axie
-print(TCPpositionX, TCPpositionZ - _min, middlepointNoralDegree)
-
+_waypoints = np.stack([TCPpositionX, TCPpositionZ - _min, middlepointNoralDegree], axis=1)
+print("_waypoints \n", _waypoints)
+np.save("./ply/waypoints", _waypoints)
 plt.show()
