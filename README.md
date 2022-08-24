@@ -30,10 +30,12 @@ python3 setup.py develop --user
 Refferernces
 
 1. https://github.com/yhesper/TaichiSimplicialFluid
-2. 3d convexhull 
-    http://www.bowdoin.edu/~ltoma/teaching/cs3250-CompGeom/spring17/Lectures/cg-hull3d.pdf
-    https://github.com/swapnil96/Convex-hull
-    https://github.com/mauriciopoppe/quickhull3d
+2. 3d convexhull implement
+    Overview: http://www.bowdoin.edu/~ltoma/teaching/cs3250-CompGeom/spring17/Lectures/cg-hull3d.pdf
+    JS quickhull https://github.com/swapnil96/Convex-hull
+    quickhull https://github.com/mauriciopoppe/quickhull3d
+    increament hull https://github.com/Dung-Han-Lee/Convexhull-3D-Implementation-of-incremental-convexhull-algorithm
+    cudahull qhull
 
 Some new refferences in numeric analysis
 
