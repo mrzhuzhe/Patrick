@@ -93,19 +93,18 @@ def fill_faces_attributes():
         _An = A.norm()
         f.incenter = (_Cn * v2.x + _Bn * v1.x + _An * v0.x ) / (_Cn + _Bn + _An)
 
+        """
         if (ti.math.dot(n, v0.x) >= 0.0 and ti.math.dot(n, v1.x) >= 0.0 and ti.math.dot(n, v2.x) >= 0.0):
             
             f.use = 0
             
-        else:
-            
-            #"""            
+        else:                     
             if 14 < f.incenter[0] < 14.5:
                 f.use = 1
             else:
                 f.use = 0
-            #"""
-            f.use = 1   
+        """
+        f.use = 1   
 
 fill_faces_attributes()
 
