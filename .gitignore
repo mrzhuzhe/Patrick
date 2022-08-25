@@ -137,3 +137,5 @@ outputs
 
 
 geo/contour/ply
+3dconvexhull/data/
+3dconvexhull/outputs

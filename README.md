@@ -10,9 +10,11 @@
 //  compute 1d convexhull
 geo/contour/calculate_normal.py
 
-//  compute 3d convexhull
+//  compute 3d mesh normal
 circle-geo.py
 
+//  compute 3d convexhull but only single thread take 37 min for 35779 points
+python3 hull.py data/rd9c37-lq-wholePoint.asc
 ```
 
 ## Install 
@@ -32,10 +34,11 @@ Refferernces
 1. https://github.com/yhesper/TaichiSimplicialFluid
 2. 3d convexhull implement
     Overview: http://www.bowdoin.edu/~ltoma/teaching/cs3250-CompGeom/spring17/Lectures/cg-hull3d.pdf
-    JS quickhull https://github.com/swapnil96/Convex-hull
-    quickhull https://github.com/mauriciopoppe/quickhull3d
+    quickhull https://github.com/swapnil96/Convex-hull
+    JS quickhull https://github.com/mauriciopoppe/quickhull3d
     increament hull https://github.com/Dung-Han-Lee/Convexhull-3D-Implementation-of-incremental-convexhull-algorithm
-    cudahull qhull
+    cudahull qhull 
+    CGAL
 
 Some new refferences in numeric analysis
 

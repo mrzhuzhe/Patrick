@@ -197,6 +197,7 @@ def distLine(pointA, pointB, pointX): #Calculate the distance of a point from a 
 		return None
 
 	else:
+        # 模长等于以两个向量为边的平行四边形的面积  https://zh.wikipedia.org/wiki/%E5%8F%89%E7%A7%AF
 		return vec4.length()/vec3.length()
 
 def max_dist_line_point(pointA, pointB): #Calculate the maximum distant point from a line for initial simplex
@@ -223,6 +224,7 @@ def max_dist_plane_point(plane): # Calculate the maximum distance from the plane
 
 def find_eye_point(plane, to_do_list): # Calculate the maximum distance from the plane
 	maxDist = 0
+    # seems not dfs
 	for point in to_do_list:
 		dist = plane.dist(point)
 		if (dist > maxDist):
@@ -379,15 +381,15 @@ for plane in list_of_planes:
 	final_faces.append(plane.pointC)
 
 #print(len(list_of_planes), len(final_vertices), final_vertices)
-"""
+#"""
 
-try: # Open the output file
-	data1 = open("data/"+sys.argv[1].split('.')[0]+".out", "w")
-	data1.write(str(len(final_vertices)) + '\n')
-	for point in final_vertices:
-		data1.write(str(point.x) +' '+ str(point.y) +' '+ str(point.z) + '\n')
+#try: # Open the output file
+data1 = open(sys.argv[1].split('.')[0]+".out", "w")
+data1.write(str(len(final_vertices)) + '\n')
+for point in final_vertices:
+	data1.write(str(point.x) +' '+ str(point.y) +' '+ str(point.z) + '\n')
 
-finally:
-	data1.close()	
+#finally:
+data1.close()	
 
-"""
+#"""
