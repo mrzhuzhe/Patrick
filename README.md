@@ -15,7 +15,21 @@ circle-geo.py
 
 //  compute 3d convexhull but only single thread take 37 min for 35779 points
 python3 hull.py data/rd9c37-lq-wholePoint.asc
+
+//  /CSE  for  MIT 18.085  "computer scientice engineering: cource example code 
+
+//  /autodiff from Max Slater's Blog
+
+
+//  /PBD  https://matthias-research.github.io/pages/publications/posBasedDyn.pdf
+python3 tiPBD.py
+
+
 ```
+
+
+
+
 
 ## Install 
 
