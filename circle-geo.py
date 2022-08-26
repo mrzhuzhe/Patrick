@@ -1,3 +1,4 @@
+from cv2 import convexHull
 import taichi as ti
 import numpy as np
 import meshtaichi_patcher as Patcher
@@ -41,6 +42,8 @@ indices = ti.field(dtype=ti.u32, shape = nf * 3)
 print("nf", nf)
 incenter_point = ti.Vector.field(3, dtype=float, shape=nf)
 incenter_Upper_point = ti.Vector.field(3, dtype=float, shape=nf)
+
+convexHullPoints = ti.Vector.field(3, dtype=float, shape=nf)
 
 @ti.kernel
 def get_indices():
@@ -143,6 +146,16 @@ def get_incenterPoint():
 get_incenterPoint()
 
 
+points =[]
+data = open("./3dconvexhull/data/rd9c37-lq-wholePoint.out", "r")
+num = int(data.readline())
+for line in data:
+    a = list(map(float, line.split(" ")))
+    points.append([a[0], a[1], a[2]])
+
+convexHullPoints.from_numpy(np.array(points))
+#print("_np_data", _np_data)
+
 
 while window.running:
     ti.deactivate_all_snodes()  
@@ -158,9 +171,12 @@ while window.running:
     
     #scene.particles(model.verts.x, color = (0, 1, 0), radius = 1)
     
-    scene.particles(incenter_point, color = (1, 0, 0), radius = 1)
+    #scene.particles(incenter_point, color = (1, 0, 0), radius = 1)
 
-    scene.particles(incenter_Upper_point, color = (0, 0, 1), radius = 1)
+    #scene.particles(incenter_Upper_point, color = (0, 0, 1), radius = 1)
+
+    scene.particles(convexHullPoints, color = (0, 1, 1), radius = 0.1)
+    
 
     canvas.scene(scene)
     window.show()
