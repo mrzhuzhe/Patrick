@@ -3,12 +3,15 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from find_convexhull import fine_one_demension_convexhull
 
-ascii_grid = np.loadtxt("ply/rd9c37-lq-Points-1mm.asc", skiprows=1)
+#ascii_grid = np.loadtxt("ply/rd9c37-lq-Points-1mm.asc", skiprows=1)
+ascii_grid = np.loadtxt("ply/ar35-point-Points.asc", skiprows=1)
 
 #   only need one side  for better plot
 ascii_grid = ascii_grid[ascii_grid[:,0]>=0]
 
 #ascii_grid = ascii_grid[-10:]
+print("radius: ", ascii_grid[0:].max())
+
 
 """
 fig = plt.figure()
@@ -84,5 +87,5 @@ print("len(TCPpositionX), len(TCPpositionZ), len(middlepointNoralDegree)", len(T
 # absolute value for Z axie
 _waypoints = np.stack([TCPpositionX, TCPpositionZ - _min, middlepointNoralDegree], axis=1)
 print("_waypoints \n", _waypoints)
-np.save("./ply/waypoints", _waypoints)
+np.save("./ply/waypoints-ar35", _waypoints)
 plt.show()
