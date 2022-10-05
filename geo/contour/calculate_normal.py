@@ -40,7 +40,7 @@ ch_x = one_demension_convexhull[:, 0]
 ch_z = one_demension_convexhull[:, 2]
 
 # TCP length is 15mm
-_TCPLengh_ = 150
+_TCPLengh_ = 170
  
 i = 1
 middlepointX = []   
